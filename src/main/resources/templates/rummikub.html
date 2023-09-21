@@ -1,0 +1,166 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Rummikub</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="css/index.css" type="text/css">
+</head>
+<body>
+    <button class = "newGame">
+        <a href="rummikub/new">New game</a>
+    </button>
+    <button class = "newGame">
+        <a href="rummikub/menu">Back to menu</a>
+    </button>
+    <div th:if="${@userController.getUsersSize() == 2}">
+        <span class ="corner">You are logged in as <span th:text="${@rummikubController.getCurrentPlayerName()}"/>.
+            <form method="get" action="/rummikub/rating">
+                <input type="submit" class="ratingButton" value="Submit Rating" onclick="ratingClick()">
+                <div class="rate">
+                    <input type="radio" id="star5" name="rating" value="5" />
+                    <label for="star5">5 stars</label>
+                    <input type="radio" id="star4" name="rating" value="4" />
+                    <label for="star4">4 stars</label>
+                    <input type="radio" id="star3" name="rating" value="3" />
+                    <label for="star3">3 stars</label>
+                    <input type="radio" id="star2" name="rating" value="2" />
+                    <label for="star2">2 stars</label>
+                    <input type="radio" id="star1" name="rating" value="1" />
+                    <label for="star1">1 star</label>
+                </div>
+            </form>
+        </span>
+    </div>
+    <div th:if="${@userController.getUsersSize() == 0}">
+        <span class ="corner">Current player <span th:text="${@rummikubController.getCurrentPlayerName()}"/>.
+    </div>
+    <div class = "block">
+        <div class ="title3"><b>Current players cards</b></div>
+    </div>
+    <div class ="card">
+        <div th:unless="${@rummikubController.gameWon}" >
+            <div th:utext="${@rummikubController.playerHand}"/>
+        </div>
+        <div th:if="${@rummikubController.gameWon}">
+            <div class="title1">
+                Congratulations <span th:text="${@rummikubController.getCurrentPlayerName()}"/>, you won !
+            </div>
+        </div>
+    </div>
+
+    <button class="sortButton" th:unless="${@rummikubController.gameWon}">
+        <a href="/rummikub/sortByNumber">Sort By Number</a>
+    </button>
+
+    <button class="sortButton" th:unless="${@rummikubController.gameWon}">
+        <a href="/rummikub/sortByColor">Sort By Color</a>
+    </button>
+
+    <div class = "inputHandle" th:unless="${@rummikubController.gameWon}">
+        <form method="get" action="/rummikub/handleInput">
+            <p class="title2" style="font-size: x-large; margin-bottom: 10px">
+            Enter your play:
+                <input name="input" type="text" maxlength="6" style="height: 30px;width: 205px" required autocomplete="off" th:if="${@rummikubController.getErrorMessage() == 'dontDisplay'}"/>
+                <input name="input" type="text" maxlength="6" style="height: 30px;width: 205px" required autocomplete="off" th:unless="${@rummikubController.getErrorMessage() == 'dontDisplay'}" th:placeholder="${@rummikubController.getErrorMessage()}"/>
+                <input type="submit" value="Submit" class ="ratingButton">
+            </p>
+        </form>
+    </div>
+
+    <button class="sortButton" style="float: right ;margin-right: 30px; width: 140px" th:unless="${@rummikubController.gameWon or @rummikubController.getRemainingTiles() == 0}">
+        <a href="/rummikub/pickTile">Pick tile</a>
+    </button>
+    <script th:inline="javascript" th:unless="${@rummikubController.getErrorMessage() == 'dontDisplay'}">
+        var message = /*[[${@rummikubController.getErrorMessage()}]]*/ 'default';
+        if(message != null)
+        {
+            window.alert(message);
+        }
+    </script>
+
+    <div class = "block">
+        <div class ="title3"><b>Game board</b></div>
+    </div>
+    <div class ="card">
+        <div th:utext="${@rummikubController.gameBoard}"/>
+    </div>
+
+    <br> <br> <br> <br> <br> <br>
+    <div class="servicesCard">
+        <h2 class="title4">Top Scores</h2>
+        <table align="center" style="margin: 0px auto">
+            <tr>
+                <th>
+                    Player
+                </th>
+                <th>
+                    Points
+                </th>
+            </tr>
+            <tr th:each="score : ${scores}">
+                <td class="services" th:text="${score.player}"/>
+                <td class="services" th:text="${score.points}"/>
+            </tr>
+        </table>
+    </div>
+    <div class="servicesCard">
+        <h2 class="title4">Latest Comments</h2>
+        <table align="center" style="margin: 0px auto">
+            <tr>
+                <th>
+                    Player
+                </th>
+                <th>
+                    Comment
+                </th>
+                <th>
+                    Commented on
+                </th>
+            </tr>
+            <tr th:each="comment :${comments}">
+                <td class="services" th:text="${comment.player}"/>
+                <td class="services" th:text="${comment.Comment}"/>
+                <td class="services" th:text="${comment.commentedOn}"/>
+            </tr>
+        </table>
+    </div>
+    <div class="servicesCard">
+        <h2 class="title4">Average Rating</h2>
+        <ol>
+            <span class="title5" th:text="${avgRating}"/>
+        </ol>
+    </div>
+    <div class="servicesCard" th:if="${@userController.getUsersSize() == 2}">
+        <h2 class="title4">Your rating of the game</h2>
+        <span class="title5" th:text="${userRating}"/>
+    </div>
+    <div class="comment" th:unless="${@userController.getUsersSize() == 2}">
+        <br>
+    </div>
+    <div class="title6">
+        <h2>
+            How to play the game:
+        </h2>
+        <ul class="howToBox">
+            <li>If you want to play a tile from your hand you have to type its position and the coordinate of the place on the game board. (eg. place tile with position 12 to row A column 01 =>  12A01</li>
+            <li>If you want to relocate a tile that is already on the board simply type its current game board coordinate and the new coordinate (eg. relocate tile on the position B02 to C03 => B02C03</li>
+            <li>If you want to take a tile back to your hand simply type its current position on the game board</li>
+            <li>To confirm your played tiles on the game board and end your turn you have to type M (meld)</li>
+            <li>If you cannot play anything on the game board in your turn you can click on the Pick a tile button</li>
+            <li>Note : on your first turn, you must lay either groups or runs that add up to at least 30 points</li>
+        </ul>
+    </div>
+    <div class="comment" id="xd" th:if="${@userController.getUsersSize() == 2}">
+        <h2 class="commentText">Feel free to leave a comment :)</h2>
+        <form method="get" action="/rummikub/comment">
+            <input name="comment" type="text" autocomplete="off" required/>
+            <input type="submit" value="Send" class ="ratingButton" onclick="commentClick()">
+        </form>
+    </div>
+    <div class="comment" th:unless="${@userController.getUsersSize() == 2}">
+        <br>
+    </div>
+
+    <script src="js/click.js"></script>
+</body>
+</html>

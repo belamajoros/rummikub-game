@@ -1,0 +1,11 @@
+POST http://localhost:8080/rest/comment
+Content-Type: application/json
+
+{
+  "game": "rummikub",
+  "player": "TEST",
+  "comment": "good game!",
+  "commentedOn": "2020-04-13T20:28:59"
+}
+
+###

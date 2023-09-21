@@ -1,0 +1,11 @@
+POST http://localhost:8080/rest/rating
+Content-Type: application/json
+
+{
+  "game": "rummikub",
+  "player": "NewPlayer",
+  "rating": 5,
+  "ratedOn": "2020-04-13T20:59:59"
+}
+
+###

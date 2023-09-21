@@ -1,0 +1,11 @@
+POST http://localhost:8080/rest/score
+Content-Type: application/json
+
+{
+  "game": "rummikub",
+  "player": "TEST",
+  "points": 100,
+  "playedOn": "2020-04-13T19:59:30"
+}
+
+###

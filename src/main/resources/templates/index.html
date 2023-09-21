@@ -1,0 +1,39 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Gamestudio</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="css/index.css" type="text/css">
+</head>
+<body>
+    <div class="heading">
+        <span class="title1">Welcome to GameStudio!</span>
+        <span class="title2" th:unless="${@userController.getUsersSize() == 2}"> Please login first!</span>
+        <div th:if="${@userController.getUsersSize() == 0}">
+            <form method="get" action="/user/login">
+                <span class ="title2">Player 1: <input name="login" type="text" required autocomplete="off"/>
+                <input type="submit" value="Login" class="register"></span>
+            </form>
+        </div>
+        <div th:if="${@userController.getUsersSize() == 1}">
+            <form method="get" action="/user/login">
+                <span class ="title2">Player 2: <input name="login" type="text" required autocomplete="off"/>
+                <input type="submit" value="Login" class="register"></span>
+            </form>
+        </div>
+        <div th:if="${@userController.getUsersSize() == 2}">
+            <span class ="title2">You are logged in as <span th:text="${@userController.getLoggedUser(0)}"/> and <span th:text="${@userController.getLoggedUser(1)}"/>.
+                <button class="register">
+                    <a href="/user/logout">Logout</a>
+                </button>
+            </span>
+        </div>
+
+        <span class="title2" th:if="${@userController.getUsersSize() == 2 or @userController.getUsersSize() == 0}">Click to play the game!
+            <button class="register">
+                <a href="/rummikub/new">Rummikub</a>
+            </button>
+        </span>
+    </div>
+</body>
+</html>
